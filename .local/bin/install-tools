@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Install drupal.org cli
+wget -O ~/.local/bin/docli https://github.com/mglaman/drupalorg-cli/releases/latest/download/drupalorg.phar
+chmod +x ~/.local/bin/docli
+
+# Install glances
+sudo apt update -q && sudo apt install glances

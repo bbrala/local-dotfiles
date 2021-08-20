@@ -1,0 +1,6 @@
+[user]
+	name = bjorn
+	email = bjorn@swis.nl
+[core]
+	autocrlf = input
+	fileMode = false

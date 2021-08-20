@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+cd /home/localcopy
+rm -rf jsonapi_extras
+sudo chmod 777 -R drupal-extras
+rm -rf drupal-extras
+git clone git@git.drupal.org:project/jsonapi_extras
+
+composer create-project drupal/recommended-project drupal-extras --no-install
+cd drupal-extras
+
+composer config minimum-stability dev
+composer config repositories.jsonapi_extras path "/home/localcopy/jsonapi_extras"
+
+composer require --dev drupal/core-dev --no-install
+composer require --dev phpspec/prophecy-phpunit:^2 --no-install
+composer require drupal/jsonapi_extras --no-install
+composer require drush/drush --no-install
+ln -s web public_html
+
+composer i
+
+drush --yes site:install standard \
+    install_configure_form.site_default_country=NL \
+    install_configure_form.date_default_timezone=Europe/Amsterdam \
+    install_configure_form.enable_update_status_module=1 \
+    install_configure_form.enable_update_status_emails=NULL \
+    --locale="en" \
+    --site-name="jsonapi testsite" \
+    --site-mail="bjorn@swis.nl" \
+    --account-name="root" \
+    --account-pass="root" \
+    --account-mail="bjorn@swis.nl" \
+	--db-url="mysql://root:root@localhost/drupal_extras"
+
+cp web/sites/example.settings.local.php web/sites/default/settings.local.php
+cp web/core/phpunit.xml.dist web/core/phpunit.xml
+mkdir -p web/sites/simpletest/browser_output
+chmod -R 777 sites/simpletest
+sed -i 's|name="SIMPLETEST_BASE_URL" value=""|name="SIMPLETEST_BASE_URL" value="https://drupal-extras\.dev\.swis\.nl"|g' web/core/phpunit.xml
+sed -i 's|name="SIMPLETEST_DB" value=""|name="SIMPLETEST_DB" value="mysql://root:root@localhost/drupal_extras"|g' web/core/phpunit.xml
+sed -i 's|name="BROWSERTEST_OUTPUT_DIRECTORY" value=""|name="BROWSERTEST_OUTPUT_DIRECTORY" value="../sites/simpletest/browser_output"|g' web/core/phpunit.xml
+sed -i 's|<!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/> -->|<env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>|g' web/core/phpunit.xml
