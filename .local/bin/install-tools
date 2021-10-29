@@ -5,4 +5,4 @@ wget -O ~/.local/bin/docli https://github.com/mglaman/drupalorg-cli/releases/lat
 chmod +x ~/.local/bin/docli
 
 # Install glances
-sudo apt update -q && sudo apt install glances
+sudo apt update -q && sudo apt install -y glances
