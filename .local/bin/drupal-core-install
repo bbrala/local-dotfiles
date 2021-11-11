@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
+VERSION=${1:-9.4.x}
+
 cd /home/localcopy
 sudo chmod 777 -R drupal-core
-rm -rf drupal-core
-mkdir drupal-core
-cd drupal-core
-git clone -b 9.3.x git@git.drupal.org:project/drupal web
+rm -rf drupal-core-${VERSION//./-}
+mkdir drupal-core-${VERSION//./-}
+cd drupal-core-${VERSION//./-}
+git clone -b ${VERSION} git@git.drupal.org:project/drupal web
 cd web
 composer i
 composer require --dev drupal/core-dev
@@ -24,7 +26,7 @@ drush --yes site:install standard \
     --account-name="root" \
     --account-pass="root" \
     --account-mail="bjorn@swis.nl" \
-	--db-url="mysql://root:root@localhost/drupal_core"
+    -db-url="mysql://root:root@localhost/drupal_core_${VERSION//./-}"
 
 cd ..
 ln -s web public_html
@@ -32,7 +34,7 @@ ln -s web public_html
 cp web/core/phpunit.xml.dist web/core/phpunit.xml
 mkdir -p web/sites/simpletest/browser_output
 chmod -R 777 web/sites/simpletest
-sed -i 's|name="SIMPLETEST_BASE_URL" value=""|name="SIMPLETEST_BASE_URL" value="https://drupal-core\.dev\.swis\.nl"|g' web/core/phpunit.xml
-sed -i 's|name="SIMPLETEST_DB" value=""|name="SIMPLETEST_DB" value="mysql://root:root@localhost/drupal_extras"|g' web/core/phpunit.xml
+sed -i 's|name="SIMPLETEST_BASE_URL" value=""|name="SIMPLETEST_BASE_URL" value="https://drupal-core-${VERSION//./-}\.dev\.swis\.nl"|g' web/core/phpunit.xml
+sed -i 's|name="SIMPLETEST_DB" value=""|name="SIMPLETEST_DB" value="mysql://root:root@localhost/drupal_core_${VERSION//./-}"|g' web/core/phpunit.xml
 sed -i 's|name="BROWSERTEST_OUTPUT_DIRECTORY" value=""|name="BROWSERTEST_OUTPUT_DIRECTORY" value="../sites/simpletest/browser_output"|g' web/core/phpunit.xml
 sed -i 's|<!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/> -->|<env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>|g' web/core/phpunit.xml
