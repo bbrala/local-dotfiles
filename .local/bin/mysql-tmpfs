@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+SOURCE_DATABASE=${1}
+DEST_DATABASE=${2}
+
+if [ -z ${SOURCE_DATABASE} ]; then echo "Missing source database. Usage: mysql-tmpfs [SOURCE_DATABASE] [DEST_DATABASE]"; exit 1; else echo "Setting up database '${SOURCE_DATABASE}' as ${DEST_DATABASE} in memory (tmpfs)"; fi
+if [ -z ${DEST_DATABASE} ]; then echo "Missing destination database. Usage: mysql-tmpfs [SOURCE_DATABASE] [DEST_DATABASE]"; exit 1; else echo "Setting up database '${SOURCE_DATABASE}' as ${DEST_DATABASE} in memory (tmpfs)"; fi
+
+exit 1
+sudo mkdir /var/tmpfs_mysql
+
+grep -q 'tmpfs_mysql' /etc/fstab ||
+echo "tmpfs  /var/tmpfs_mysql  tmpfs  rw,uid=$(id mysql -u),gid=$(id mysql -g),nodev,nosuid,noexec,noatime,size=2G  0 0" | sudo tee -a /etc/fstab > /dev/null
+
+sudo mount -a
+sudo mkdir /var/tmpfs_mysql/${DEST_DATABASE}
+sudo chown -R mysql:mysql /var/tmpfs_mysql
+sudo ln -s /var/tmpfs_mysql/${DEST_DATABASE} /var/lib/mysql/${DEST_DATABASE}
+
+sudo service mysql stop
+
+sudo cp -Rv /var/lib/mysql/${SOURCE_DATABASE}/* /var/tmpfs_mysql/${DEST_DATABASE}/*
+
+sudo service mysql start
