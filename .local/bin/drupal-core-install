@@ -26,7 +26,7 @@ drush --yes site:install standard \
     --account-name="root" \
     --account-pass="root" \
     --account-mail="bjorn@swis.nl" \
-    -db-url="mysql://root:root@localhost/drupal_core_${VERSION//./-}"
+    --db-url="mysql://root:root@localhost/drupal_core_${VERSION//./-}"
 
 cd ..
 ln -s web public_html

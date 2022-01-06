@@ -30,7 +30,7 @@ drush --yes site:install standard \
     --account-name="root" \
     --account-pass="root" \
     --account-mail="bjorn@swis.nl" \
-	--db-url="mysql://root:root@localhost/drupal_extras"
+	  --db-url="mysql://root:root@localhost/drupal_extras"
 
 chmod -R 777 web/sites/default
 cp web/sites/example.settings.local.php web/sites/default/settings.local.php
