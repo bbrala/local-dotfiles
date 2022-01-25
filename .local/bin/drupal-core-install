@@ -26,7 +26,7 @@ drush --yes site:install standard \
     --account-name="root" \
     --account-pass="root" \
     --account-mail="bjorn@swis.nl" \
-    --db-url="mysql://root:root@localhost/drupal_core_${VERSION//./-}"
+    --db-url="mysql://root:root@localhost/drupal_core_${VERSION//./_}"
 
 cd ..
 ln -s web public_html
@@ -35,6 +35,6 @@ cp web/core/phpunit.xml.dist web/core/phpunit.xml
 mkdir -p web/sites/simpletest/browser_output
 chmod -R 777 web/sites/simpletest
 sed -i 's|name="SIMPLETEST_BASE_URL" value=""|name="SIMPLETEST_BASE_URL" value="https://drupal-core-${VERSION//./-}\.dev\.swis\.nl"|g' web/core/phpunit.xml
-sed -i 's|name="SIMPLETEST_DB" value=""|name="SIMPLETEST_DB" value="mysql://root:root@localhost/drupal_core_${VERSION//./-}"|g' web/core/phpunit.xml
+sed -i 's|name="SIMPLETEST_DB" value=""|name="SIMPLETEST_DB" value="mysql://root:root@localhost/drupal_core_${VERSION//./_}"|g' web/core/phpunit.xml
 sed -i 's|name="BROWSERTEST_OUTPUT_DIRECTORY" value=""|name="BROWSERTEST_OUTPUT_DIRECTORY" value="../sites/simpletest/browser_output"|g' web/core/phpunit.xml
 sed -i 's|<!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/> -->|<env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>|g' web/core/phpunit.xml
