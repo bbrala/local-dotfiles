@@ -9,9 +9,9 @@ cd drupal-core-${VERSION//./-}
 git clone -b ${VERSION} git@git.drupal.org:project/drupal web
 cd web
 composer i
-composer require --dev drupal/core-dev
+composer require --dev drupal/core-dev -W
 composer require --dev phpspec/prophecy-phpunit:^2 -W
-composer require --dev drush/drush
+composer require --dev drush/drush -W
 
 cp sites/example.settings.local.php sites/default/settings.local.php
 
