@@ -2,7 +2,7 @@
 VERSION=${1:-9.4.x}
 
 cd /home/localcopy
-sudo chmod 777 -R drupal-core
+sudo chmod 777 -R drupal-core-${VERSION//./-}
 rm -rf drupal-core-${VERSION//./-}
 mkdir drupal-core-${VERSION//./-}
 cd drupal-core-${VERSION//./-}
