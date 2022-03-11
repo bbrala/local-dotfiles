@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Importing files"
-/bin/cp -rfiTv . $HOME
+rsync -av . $HOME --exclude .git --exclude .idea
 
 if [[ -d "$HOME/.local/bin" ]]; then
   sudo chmod -R +x $HOME/.local/bin
