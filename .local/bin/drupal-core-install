@@ -7,7 +7,7 @@ sudo chmod 777 -R drupal-core-${VERSION//./-}
 rm -rf drupal-core-${VERSION//./-}
 mkdir drupal-core-${VERSION//./-}
 cd drupal-core-${VERSION//./-}
-git cache clone -b ${VERSION} git@git.drupal.org:project/drupal web
+git clone --filter=blob:none -b ${VERSION} git@git.drupal.org:project/drupal web
 cd web
 composer i
 composer require --dev drupal/core-dev:${VERSION}-dev -W

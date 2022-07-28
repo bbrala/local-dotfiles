@@ -16,7 +16,3 @@ chmod -f 644 $HOME/.ssh/id_rsa.pub || :
 chmod -f 644 $HOME/.ssh/authorized_keys || :
 
 echo "alias k='kubectl'" >> $HOME/.bashrc
-
-sudo cp $HOME/git-cache-command/git-cache /usr/lib/git-core/git-cache
-git cache init /home/vagrant/.cache/git-cache global
-git config --global cache.directory "/home/vagrant/.cache/git-cache"
