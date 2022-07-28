@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+set -x
 cd /home/localcopy
 rm -rf jsonapi_extras
 sudo chmod 777 -R drupal-extras
 rm -rf drupal-extras
-git clone git@git.drupal.org:project/jsonapi_extras
+git cache clone git@git.drupal.org:project/jsonapi_extras
 
 composer create-project drupal/recommended-project drupal-extras --no-install
 cd drupal-extras
