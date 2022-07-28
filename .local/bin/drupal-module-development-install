@@ -18,7 +18,6 @@ composer config minimum-stability dev
 composer config repositories.${DRUPAL_PROJECT} path "/home/localcopy/${DRUPAL_PROJECT}"
 
 composer require --dev drupal/core-dev --no-install
-composer require --dev drupal/core-dev
 composer require --dev phpspec/prophecy-phpunit:^2 -W
 composer require drupal/${DRUPAL_PROJECT} --no-install
 
@@ -29,7 +28,7 @@ ln -s web public_html
 
 composer install
 
-drush --yes site:install standard \
+vendor/bin/drush --yes site:install standard \
     install_configure_form.site_default_country=NL \
     install_configure_form.date_default_timezone=Europe/Amsterdam \
     install_configure_form.enable_update_status_module=1 \

@@ -15,7 +15,7 @@ composer require --dev drush/drush
 
 cp sites/example.settings.local.php sites/default/settings.local.php
 
-drush --yes site:install standard \
+vendor/bin/drush --yes site:install standard \
     install_configure_form.site_default_country=NL \
     install_configure_form.date_default_timezone=Europe/Amsterdam \
     install_configure_form.enable_update_status_module=1 \

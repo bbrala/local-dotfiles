@@ -1,0 +1,123 @@
+#!/bin/bash
+
+# This is a helper script for managing a Drupal git cache. This is based on
+# work by Randy Fay (his post at http://randyfay.com/node/93).
+
+# There are three options within this script being to initialize repos initially,
+# add new repos, and update all repos.
+#
+# Initialize:
+#   ./drupal-git-cache.sh init
+#
+# Add a new repo:
+#   ./drupal-git-cache.sh add project_name
+#
+# Update repos:
+#   ./drupal-git-cache.sh update
+
+# Below are the config options used by the script.
+
+# The location to the cache repo:
+REPO=$HOME/gitcaches/drupal
+
+# Initial projects list:
+PROJECTS="drupal jsonapi_extras infrastructure"
+
+# Source git url for projects:
+SOURCE_BASE_URL=git@git.drupal.org:project
+
+case $1 in
+  # Initialize cache repo.
+  init)
+    # Create a temporary directory and arrange for cleanup on exit.
+	# On OS X mktemp does not return a directory by default but $TMPDIR
+	# has the temp directory location.
+	if test -d $TMPDIR; then
+	  TEMPDIR=`mktemp -d -t drupal-git-cache`
+	else
+	  TEMPDIR=`mktemp -d`
+	fi
+
+	trap "rm -Rf $TEMPDIR" exit
+	
+	if  ! test -d  $REPO; then
+	  mkdir -p $REPO
+	fi
+
+	if  ! test -d  $REPO; then
+	  exit "Unable to create repo directory."
+	fi
+
+	cd $REPO
+	
+	if  ! test -d ".git"; then
+	  git init --bare
+	  git config core.compression 1
+	fi
+
+	# In each project:
+	# * Clone it
+	# * Use that clone as a remote in our reference repo
+	echo "Cloning all projects to temp repos"
+	for project in $PROJECTS
+	do
+	  echo "Cloning $project..."
+	  git clone --bare $SOURCE_BASE_URL/$project.git $TEMPDIR/$project
+	  git remote add $project $TEMPDIR/$project
+	done
+
+	# Fetch all the new (local) remotes we gathered
+	git fetch --all
+
+	echo "Fixing URLs on all remotes to point to the real repo"
+	# Now change the remotes to the correct remote URL.
+	for project in $PROJECTS
+	do
+	  git remote set-url $project $SOURCE_BASE_URL/$project.git
+	done
+
+	echo "Re-fetching from the real repo"
+	# To update, all we need to do is...
+	git fetch --all
+  ;;
+
+  # Add a new repo.
+  add)
+    if [$2 == ""]; then
+	  exit "Please supply a drupal project to add."
+	fi
+
+    # Create a temporary directory.
+	if test -d $TMPDIR; then
+	  TEMPDIR=`mktemp -d -t drupal-git-cache`
+	else
+	  TEMPDIR=`mktemp -d`
+	fi
+
+	trap "rm -Rf $TEMPDIR" exit
+	
+	cd $REPO
+	
+	# First clone the directory separately.
+	git clone --bare $SOURCE_BASE_URL/$2.git $TEMPDIR
+
+	# Then fetch from the temporary dir into our main repo.
+	git remote add $2 $TEMPDIR/
+	git fetch $2 --tags
+
+	# Then change the remote URL and fetch normally.
+	git remote set-url $2 $SOURCE_BASE_URL/$2.git
+	git fetch $2 --tags
+  ;;
+
+  # Update repos.
+  update)
+    cd $REPO
+	git fetch --all
+    ;;
+
+  # Note the command is not allowed
+  *)
+    echo "Unknown command."
+    ;;
+esac

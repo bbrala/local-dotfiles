@@ -163,6 +163,7 @@ $processExclusions.Add('goland64.exe') > $null
 $processExclusions.Add('phpstorm64.exe') > $null
 $processExclusions.Add('pycharm64.exe') > $null
 $processExclusions.Add('rubymine64.exe') > $null
+$processExclusions.Add('gateway64.exe') > $null
 $processExclusions.Add('studio64.exe') > $null
 
 # JB Toolbox
