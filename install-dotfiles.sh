@@ -15,4 +15,4 @@ chmod -f 600 $HOME/.ssh/id_rsa || :
 chmod -f 644 $HOME/.ssh/id_rsa.pub || :
 chmod -f 644 $HOME/.ssh/authorized_keys || :
 
-echo "alias k='kubectl'" >> $HOME/.bashrc
+grep -qxF "'alias k='kubectl'" $HOME/.bashrc || echo "alias k='kubectl'" >> $HOME/.bashrc

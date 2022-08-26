@@ -10,7 +10,7 @@ cd /home/localcopy
 rm -rf ${DRUPAL_PROJECT}
 sudo chmod 777 -R drupal-module-${DRUPAL_PROJECT_PATH}
 rm -rf drupal-module-${DRUPAL_PROJECT_PATH}
-git clone --filter=blob:none git@git.drupal.org:project/${DRUPAL_PROJECT}
+git clone git@git.drupal.org:project/${DRUPAL_PROJECT}
 
 composer create-project drupal/recommended-project drupal-module-${DRUPAL_PROJECT_PATH} --no-install
 cd drupal-module-${DRUPAL_PROJECT_PATH}

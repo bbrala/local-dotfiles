@@ -8,4 +8,3 @@ function drupalCache() {
     git -c "$HOME"/gitcaches/drupal.reference pull --all
   fi
 }
-
