@@ -2,7 +2,9 @@
 set -x
 VERSION=${1:-9.5.x}
 VERSION_CLEAN=${VERSION//./-}
-cd /home/localcopy
+PROJECTS_PATH=${PROJECTS_PATH:-/home/localcopy}
+
+cd ${PROJECTS_PATH}
 if  ! test -d  jsonapi_extras; then
   git clone git@git.drupal.org:project/jsonapi_extras
 else
@@ -17,7 +19,7 @@ if  ! test -d  drupal-extras-${VERSION_CLEAN}/web; then
   pushd drupal-extras-${VERSION_CLEAN}
 
   composer config minimum-stability dev
-  composer config repositories.jsonapi_extras path "/home/localcopy/jsonapi_extras"
+  composer config repositories.jsonapi_extras path "$PROJECTS_PATH/jsonapi_extras"
 
   composer require --dev drupal/core-dev:${VERSION}-dev -W
   composer require --dev phpspec/prophecy-phpunit:^2 -W

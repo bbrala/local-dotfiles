@@ -1,0 +1,7 @@
+#!/bin/bash
+
+PROJECTS_PATH=${PROJECTS_PATH:-/home/localcopy}
+
+cd ${PROJECTS_PATH}
+git clone git@bitbucket.org:swisnl/planningwb5
+git clone git@bitbucket.org:swisnl/webbeheer-library webbeheer4_library
