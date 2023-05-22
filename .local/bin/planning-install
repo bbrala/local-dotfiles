@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJECTS_PATH=${PROJECTS_PATH:-/home/localcopy}
+PROJECTS_PATH=${PROJECTS_PATH:-$HOME/projects}
 
 cd ${PROJECTS_PATH}
 git clone git@bitbucket.org:swisnl/planningwb5

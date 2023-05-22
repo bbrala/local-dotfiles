@@ -2,7 +2,7 @@
 set -x
 VERSION=${1:-9.5.x}
 VERSION_CLEAN=${VERSION//./-}
-PROJECTS_PATH=${PROJECTS_PATH:-/home/localcopy}
+PROJECTS_PATH=${PROJECTS_PATH:-$HOME/projects}
 
 cd ${PROJECTS_PATH}
 if  ! test -d  jsonapi_extras; then

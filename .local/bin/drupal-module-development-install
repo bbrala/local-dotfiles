@@ -7,7 +7,7 @@ DRUPAL_VERSION=${3:-'10.0.x-dev'}
 
 if [ -z ${DRUPAL_PROJECT} ]; then echo "Missing project. Usage: drupal-module-development-install [DRUPAL_PROJECT] [EXTRA_COMPOSER_REQUIRE]"; exit 1; else echo "Setting up project '${DRUPAL_PROJECT}'"; fi
 
-PROJECTS_PATH=${PROJECTS_PATH:-/home/localcopy}
+PROJECTS_PATH=${PROJECTS_PATH:-$HOME/projects}
 
 cd ${PROJECTS_PATH}
 rm -rf ${DRUPAL_PROJECT}

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -x
 VERSION=${1:-9.5.x}
-PROJECTS_PATH=${PROJECTS_PATH:-/home/localcopy}
+PROJECTS_PATH=${PROJECTS_PATH:-$HOME/projects}
 
 cd ${PROJECTS_PATH}
 sudo chmod 777 -R drupal-core-${VERSION//./-}
