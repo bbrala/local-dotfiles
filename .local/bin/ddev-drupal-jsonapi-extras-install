@@ -86,3 +86,5 @@ else
   pushd drupal-extras-${VERSION_CLEAN}/web
   git pull --all
 fi
+
+ddev launch
