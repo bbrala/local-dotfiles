@@ -24,6 +24,7 @@ cd drupal-core-${VERSION//./-}
 ddev config --docroot= --project-type=drupal${VERSION%.*.*} --project-name=drupal-core-${VERSION//./-}
 ddev remove
 ddev start
+ddev auth ssh
 
 ddev composer i
 ddev composer require --dev drupal/core-dev:${VERSION}-dev -W

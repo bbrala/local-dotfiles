@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+set -x
+VERSION=${1:-9.5.x}
+PROJECTS_PATH=${PROJECTS_PATH:-$HOME/projects}
+
+cd ${PROJECTS_PATH}
+if  ! test -d  jsonapi_extras; then
+  git clone git@git.drupal.org:project/jsonapi_extras
+else
+  pushd jsonapi_extras
+  git pull --all
+  popd
+fi
+
+# If drupal-core-cache-${VERSION//./-} does not exist echo something
+if [ ! -d "drupal-core-cache-${VERSION//./-}" ]; then
+  echo "drupal-core-cache-${VERSION//./-} does not exist"
+  git clone -b ${VERSION} git@git.drupal.org:project/drupal drupal-core-cache-${VERSION//./-}
+else
+  cd drupal-core-cache-${VERSION//./-}
+  git pull
+  cd ..
+fi
+
+if  ! test -d  drupal-extras-${VERSION_CLEAN}/web; then
+  rm -rf drupal-extras-${VERSION_CLEAN}
+  cp -r drupal-core-cache-${VERSION//./-} drupal-extras-${VERSION//./-}
+  pushd drupal-extras-${VERSION//./-}
+  echo pwd
+
+  ddev config --docroot= --project-type=drupal${VERSION%.*.*} --project-name=drupal-extras-${VERSION//./-}
+  ddev remove
+
+  cat <<EOF > .ddev/docker-compose.mounts.yaml
+  services:
+    web:
+      volumes:
+      - "$PROJECTS_PATH/jsonapi_extras:/var/www/jsonapi_extras"
+EOF
+
+
+  ddev start
+  ddev auth ssh
+
+  ddev composer i
+  ddev composer require --dev drupal/core-dev:${VERSION}-dev -W
+  ddev composer require --dev phpspec/prophecy-phpunit:^2 -W
+  ddev composer require --dev drush/drush
+
+  ddev composer config minimum-stability dev
+  ddev composer config repositories.jsonapi_extras path "/var/www/jsonapi_extras"
+  ddev composer require drupal/jsonapi_extras -n
+
+
+
+  cp sites/example.settings.local.php sites/default/settings.local.php
+
+  ddev drush --yes site:install standard \
+      install_configure_form.site_default_country=NL \
+      install_configure_form.date_default_timezone=Europe/Amsterdam \
+      install_configure_form.enable_update_status_module=1 \
+      install_configure_form.enable_update_status_emails=NULL \
+      --locale="en" \
+      --site-name="JsonAPI Extras ${VERSION} workspace" \
+      --site-mail="bjorn@swis.nl" \
+      --account-name="root" \
+      --account-pass="root" \
+      --account-mail="bjorn@swis.nl" \
+      --db-url="mysql://db:db@db/db"
+
+  mkdir -p sites/simpletest/browser_output
+  chmod -R 777 sites/simpletest
+
+  cp core/phpunit.xml.dist core/phpunit.xml
+
+  mkdir -p web/sites/simpletest/browser_output
+  chmod -R 777 web/sites/simpletest
+
+  sed -i 's|name="SIMPLETEST_BASE_URL" value=""|name="SIMPLETEST_BASE_URL" value="https://drupal-core-'${VERSION//./-}'\.swisdev\.nl"|g' core/phpunit.xml
+  sed -i 's|name="SIMPLETEST_DB" value=""|name="SIMPLETEST_DB" value="mysql://db:db@db/db"|g' core/phpunit.xml
+  sed -i 's|name="BROWSERTEST_OUTPUT_DIRECTORY" value=""|name="BROWSERTEST_OUTPUT_DIRECTORY" value="../sites/simpletest/browser_output"|g' core/phpunit.xml
+  sed -i 's|<!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/> -->|<env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>|g' core/phpunit.xml
+
+  ddev drush en -y jsonapi_extras
+else
+  pushd drupal-extras-${VERSION_CLEAN}/web
+  git pull --all
+fi
