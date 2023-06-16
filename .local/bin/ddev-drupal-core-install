@@ -2,6 +2,10 @@
 set -x
 VERSION=${1:-9.5.x}
 PROJECTS_PATH=${PROJECTS_PATH:-$HOME/projects}
+DDEV_MAJOR_VERSION=${VERSION%.*.*}
+if [[ ${DDEV_MAJOR_VERSION} =~ \. ]]; then
+  DDEV_MAJOR_VERSION=10
+fi
 
 cd ${PROJECTS_PATH}
 sudo chmod 777 -R drupal-core-${VERSION//./-}
@@ -21,7 +25,7 @@ fi
 cp -r drupal-core-cache-${VERSION//./-} drupal-core-${VERSION//./-}
 cd drupal-core-${VERSION//./-}
 
-ddev config --docroot= --project-type=drupal${VERSION%.*.*} --project-name=drupal-core-${VERSION//./-}
+ddev config --docroot= --project-type=drupal${DDEV_MAJOR_VERSION} --project-name=drupal-core-${VERSION//./-}
 ddev remove
 ddev start
 ddev auth ssh
