@@ -18,6 +18,8 @@ chmod -f 644 $HOME/.ssh/authorized_keys || :
 grep -qxF "'alias k='kubectl'" $HOME/.bashrc || echo "alias k='kubectl'" >> $HOME/.bashrc
 grep -qxF "'alias gitpp" $HOME/.bashrc || echo "alias gitpp='git pull --rebase && git push'" >> $HOME/.bashrc
 
+grep -qxF "PROJECTS_PATH" $HOME/.bashrc || echo 'export PROJECTS_PATH=$HOME/projects' >> $HOME/.bashrc
+
 
 grep -qxF "'alias gctype" $HOME/.bashrc || cat << 'EOF' >> $HOME/.bashrc
 
