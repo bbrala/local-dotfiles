@@ -6,16 +6,13 @@
 #        store this file in your /usr/local/bin or ~/bin and ensure it shows up in your $PATH
 #
 # Usage:
-#        ddev-drupal-core-install 11.x (bleeding edge)
-#        ddev-drupal-core-install 10.2.x
-#        ddev-drupal-core-install 10.1.x
-#        ddev-drupal-core-install 9.5.x
-#
-# Forked from https://github.com/bbrala/local-dotfiles/blob/master/.local/bin/ddev-drupal-core-install
-# and modified to support https://github.com/joachim-n/drupal-core-development-project
+#        ddev-drupal-module-install 11.x jsonapi_extras
+#        ddev-drupal-module-install 10.2.x jsonapi_extras
+#        ddev-drupal-module-install 10.1.x jsonapi_extras
+#        ddev-drupal-module-install 9.5.x jsonapi_extras
 
 set -x
-VERSION=${1:-9.5.x}
+VERSION=${1:-11.x}
 MODULE=${2:jsonapi_extras}
 PROJECTS_PATH=${PROJECTS_PATH:-$HOME/projects}
 DDEV_MAJOR_VERSION=${VERSION%.*.*}
@@ -28,7 +25,7 @@ cd drupal-module-${MODULE//_/-}
 
 ddev config \
     --project-type=drupal${DDEV_MAJOR_VERSION} \
-    --project-name=drupal-core-${VERSION//./-} \
+    --project-name=drupal-module-${MODULE//_/-}-${VERSION//./-} \
     --docroot=web \
     --create-docroot
 ddev remove
