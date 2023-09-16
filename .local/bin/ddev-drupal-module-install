@@ -16,14 +16,15 @@
 
 set -x
 VERSION=${1:-9.5.x}
+MODULE=${2:jsonapi_extras}
 PROJECTS_PATH=${PROJECTS_PATH:-$HOME/projects}
 DDEV_MAJOR_VERSION=${VERSION%.*.*}
 if [[ ${DDEV_MAJOR_VERSION} =~ \. ]]; then
   DDEV_MAJOR_VERSION=10
 fi
 
-mkdir drupal-core-${VERSION//./-}
-cd drupal-core-${VERSION//./-}
+mkdir drupal-module-${MODULE//_/-}
+cd drupal-module-${MODULE//_/-}
 
 ddev config \
     --project-type=drupal${DDEV_MAJOR_VERSION} \
@@ -57,6 +58,16 @@ sed -i 's|name="SIMPLETEST_BASE_URL" value=""|name="SIMPLETEST_BASE_URL" value="
 sed -i 's|name="SIMPLETEST_DB" value=""|name="SIMPLETEST_DB" value="mysql://db:db@db/db"|g' core/phpunit.xml
 sed -i 's|name="BROWSERTEST_OUTPUT_DIRECTORY" value=""|name="BROWSERTEST_OUTPUT_DIRECTORY" value="../sites/simpletest/browser_output"|g' core/phpunit.xml
 sed -i 's|<!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/> -->|<env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>|g' core/phpunit.xml
+
+pushd repos
+git clone git@git.drupal.org:project/${MODULE}.git
+popd
+
+ddev composer config minimum-stability dev
+ddev composer config repositories.jsonapi_extras path "./repos/${MODULE}"
+ddev composer require drupal/${MODULE} -n
+ddev drush en -y ${MODULE}
+
 set +x
 echo "
 Installation successful!
