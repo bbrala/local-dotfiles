@@ -12,12 +12,19 @@
 #        ddev-drupal-module-install 9.5.x jsonapi_extras
 
 set -x
-VERSION=${1:-11.x}
+VERSION=${1:-11.x-dev}
 MODULE=${2:jsonapi_extras}
 PROJECTS_PATH=${PROJECTS_PATH:-$HOME/projects}
 DDEV_MAJOR_VERSION=${VERSION%.*.*}
 if [[ ${DDEV_MAJOR_VERSION} =~ \. ]]; then
   DDEV_MAJOR_VERSION=10
+fi
+
+if  test -d  drupal-module-${MODULE//_/-}; then
+  cd drupal-module-${MODULE//_/-}
+  ddev remove
+  cd ..
+  rm -rf drupal-module-${MODULE//_/-}
 fi
 
 mkdir drupal-module-${MODULE//_/-}
@@ -32,7 +39,7 @@ ddev remove
 ddev start
 ddev auth ssh
 
-ddev composer create joachim-n/drupal-core-development-project --no-interaction
+ddev composer create drupal-composer/drupal-project:${VERSION} --no-interaction
 
 cp sites/example.settings.local.php sites/default/settings.local.php
 
@@ -56,6 +63,8 @@ sed -i 's|name="SIMPLETEST_DB" value=""|name="SIMPLETEST_DB" value="mysql://db:d
 sed -i 's|name="BROWSERTEST_OUTPUT_DIRECTORY" value=""|name="BROWSERTEST_OUTPUT_DIRECTORY" value="../sites/simpletest/browser_output"|g' core/phpunit.xml
 sed -i 's|<!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/> -->|<env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>|g' core/phpunit.xml
 
+cd ..
+mkdir -p repos
 pushd repos
 git clone git@git.drupal.org:project/${MODULE}.git
 popd
