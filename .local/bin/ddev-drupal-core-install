@@ -27,6 +27,7 @@ ddev config \
     --project-type=drupal${DDEV_MAJOR_VERSION} \
     --project-name=drupal-core-${VERSION//./-} \
     --docroot=web \
+    --php-version=8.3 \
     --create-docroot
 ddev remove
 ddev start
@@ -74,3 +75,4 @@ Next steps:
         ddev composer require drupal/examples
         ddev composer require drupal/stage_file_proxy
         ddev composer require drupal/backup_migrate
+"

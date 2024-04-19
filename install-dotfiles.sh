@@ -15,13 +15,13 @@ chmod -f 600 $HOME/.ssh/id_rsa || :
 chmod -f 644 $HOME/.ssh/id_rsa.pub || :
 chmod -f 644 $HOME/.ssh/authorized_keys || :
 
-grep -qxF "'alias k='kubectl'" $HOME/.bashrc || echo "alias k='kubectl'" >> $HOME/.bashrc
-grep -qxF "'alias gitpp" $HOME/.bashrc || echo "alias gitpp='git pull --rebase && git push'" >> $HOME/.bashrc
+grep -qxF "'alias k='kubectl'" $HOME/.profile || echo "alias k='kubectl'" >> $HOME/.profile
+grep -qxF "'alias gitpp" $HOME/.profile || echo "alias gitpp='git pull --rebase && git push'" >> $HOME/.profile
 
-grep -qxF "PROJECTS_PATH" $HOME/.bashrc || echo 'export PROJECTS_PATH=$HOME/projects' >> $HOME/.bashrc
+grep -qxF "PROJECTS_PATH" $HOME/.profile || echo 'export PROJECTS_PATH=$HOME/projects' >> $HOME/.profile
 
 
-grep -qxF "'alias gctype" $HOME/.bashrc || cat << 'EOF' >> $HOME/.bashrc
+grep -qxF "'alias gctype" $HOME/.profile || cat << 'EOF' >> $HOME/.profile
 
 gctype ()
 {
