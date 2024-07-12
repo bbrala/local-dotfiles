@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# Create a local environment leveraging DDEV for the specified Drupal core version.
+#
+# Installation:
+#        store this file in your /usr/local/bin or ~/bin and ensure it shows up in your $PATH
+#
+# Usage:
+#        ddev-drupal-module-install jsonapi_extras
+#        ddev-drupal-module-install jsonapi_extras
+#        ddev-drupal-module-install jsonapi_extras
+#        ddev-drupal-module-install jsonapi_extras
+
+set -x
+MODULE=${1:jsonapi_extras}
+PROJECTS_PATH=${PROJECTS_PATH:-$HOME/projects}
+
+if  test -d  drupal-module-${MODULE//_/-}; then
+  cd drupal-module-${MODULE//_/-}
+  ddev remove
+  cd ..
+  rm -rf drupal-module-${MODULE//_/-}
+fi
+
+cd ${PROJECTS_PATH} || true
+
+git clone git@git.drupal.org:project/${MODULE}.git
+
+cd ${MODULE}
+
+ddev config \
+    --project-type=drupal \
+    --project-name=${MODULE//_/-} \
+    --docroot=web \
+    --php-version=8.2
+ddev get ddev/ddev-drupal-contrib
+ddev start
+ddev poser
+ddev symlink-project
