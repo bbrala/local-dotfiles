@@ -32,7 +32,7 @@ ddev config \
     --project-type=drupal \
     --project-name=${MODULE//_/-} \
     --docroot=web \
-    --php-version=8.2
+    --php-version=8.3
 ddev get ddev/ddev-drupal-contrib
 ddev start
 ddev poser
