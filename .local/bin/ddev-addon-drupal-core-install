@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -x
+VERSION=${1:-9.5.x}
+PROJECTS_PATH=${PROJECTS_PATH:-$HOME/projects}
+
+cd ${PROJECTS_PATH}
+sudo chmod 777 -R drupal-core-${VERSION//./-}
+pushd drupal-core-${VERSION//./-}
+ddev remove
+popd
+sudo rm -rf drupal-core-${VERSION//./-}
+
+# If drupal-core-cache-${VERSION//./-} does not exist echo something
+if [ ! -d "drupal-core-cache-${VERSION//./-}" ]; then
+  echo "drupal-core-cache-${VERSION//./-} does not exist"
+  git clone -b ${VERSION} git@git.drupal.org:project/drupal drupal-core-cache-${VERSION//./-}
+else
+  cd drupal-core-cache-${VERSION//./-}
+  git pull
+  cd ..
+fi
+
+#mkdir drupal-core-${VERSION//./-}
+cp -r drupal-core-cache-${VERSION//./-} drupal-core-${VERSION//./-}
+cd drupal-core-${VERSION//./-}
+
+ddev config --omit-containers=db --disable-settings-management
+ddev start
+ddev get justafish/ddev-drupal-core-dev
+ddev restart
+ddev composer install --no-interaction
+ddev drupal install
+
+ddev composer require --dev drush/drush
+#
+#ddev drush --yes site:install standard \
+#    install_configure_form.site_default_country=NL \
+#    install_configure_form.date_default_timezone=Europe/Amsterdam \
+#    install_configure_form.enable_update_status_module=1 \
+#    install_configure_form.enable_update_status_emails=NULL \
+#    --locale="en" \
+#    --site-name="Core ${VERSION} workspace" \
+#    --site-mail="bjorn@swis.nl" \
+#    --account-name="root" \
+#    --account-pass="root" \
+#    --account-mail="bjorn@swis.nl" \
+#    --db-url="mysql://db:db@db/db"
+#
+#mkdir -p sites/simpletest/browser_output
+#chmod -R 777 sites/simpletest
+
+#cp core/phpunit.xml.dist core/phpunit.xml
+#sed -i 's|name="SIMPLETEST_BASE_URL" value=""|name="SIMPLETEST_BASE_URL" value="https://drupal-core-'${VERSION//./-}'\.swisdev\.nl"|g' core/phpunit.xml
+#sed -i 's|name="SIMPLETEST_DB" value=""|name="SIMPLETEST_DB" value="mysql://db:db@db/db"|g' core/phpunit.xml
+#sed -i 's|name="BROWSERTEST_OUTPUT_DIRECTORY" value=""|name="BROWSERTEST_OUTPUT_DIRECTORY" value="../sites/simpletest/browser_output"|g' core/phpunit.xml
+#sed -i 's|<!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/> -->|<env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>|g' core/phpunit.xml
+#
